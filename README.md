@@ -34,7 +34,7 @@ Before running the application, ensure you have the following installed:
 #### Backend (ASP.NET Core)
 
 1. **Clone the Repository**:
-   git clone https://github.com/yourusername/library-management-system.git
+   git clone [https://github.com/yourusername/library-management-system.git](https://github.com/Geppo86/libraryApi.git)
 bash: cd library-management-system
 
 
