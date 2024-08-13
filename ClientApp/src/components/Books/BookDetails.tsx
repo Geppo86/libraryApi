@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Rating, FormControl, InputLabel } from '@mui/material';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import Header from '../Header';
 
 interface BookDetailsProps {
     userRole: string | null;
+    username: string | null
+    onLogout: () => void;
 }
 
 interface Review {
@@ -14,7 +17,7 @@ interface Review {
     createdAt: string;
 }
 
-const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
+const BookDetails: React.FC<BookDetailsProps> = ({ userRole, username, onLogout }) => {
     const { id } = useParams<{ id: string }>();
     const [book, setBook] = useState<any>(null);
     const [openEdit, setOpenEdit] = useState(false);
@@ -134,6 +137,8 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
         setOpenReview(false);
     };
 
+
+
     const getAvailability = () => {
         if (book.isCheckedOut && book.checkedOutDate) {
             const checkedOutDate = new Date(book.checkedOutDate);
@@ -147,7 +152,8 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
     if (!book) return <div>Loading...</div>;
 
     return (
-        <Container>
+        <><Header username={username || ''} role={userRole || "Guest"} onLogout={onLogout} />
+            <Container>
             <Typography variant="h4">{book.title}</Typography>
             <Typography variant="subtitle1">Author: {book.author}</Typography>
             <Typography variant="body1">{book.description}</Typography>
@@ -201,40 +207,35 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
                         fullWidth
                         margin="normal"
                         value={editedBook.title || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Author"
                         name="author"
                         fullWidth
                         margin="normal"
                         value={editedBook.author || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Description"
                         name="description"
                         fullWidth
                         margin="normal"
                         value={editedBook.description || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Cover Image"
                         name="coverImage"
                         fullWidth
                         margin="normal"
                         value={editedBook.coverImage || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Publisher"
                         name="publisher"
                         fullWidth
                         margin="normal"
                         value={editedBook.publisher || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Publication Date"
                         name="publicationDate"
@@ -243,24 +244,21 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
                         margin="normal"
                         value={editedBook.publicationDate ? new Date(editedBook.publicationDate).toISOString().split('T')[0] : ''}
                         onChange={handleEditChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
+                        InputLabelProps={{ shrink: true }} />
                     <TextField
                         label="Category"
                         name="category"
                         fullWidth
                         margin="normal"
                         value={editedBook.category || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="ISBN"
                         name="isbn"
                         fullWidth
                         margin="normal"
                         value={editedBook.isbn || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                     <TextField
                         label="Page Count"
                         name="pageCount"
@@ -268,8 +266,7 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
                         fullWidth
                         margin="normal"
                         value={editedBook.pageCount || ''}
-                        onChange={handleEditChange}
-                    />
+                        onChange={handleEditChange} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseEditModal} color="secondary">Cancel</Button>
@@ -288,15 +285,13 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
                         margin="normal"
                         value={review.comment}
                         onChange={handleReviewChange}
-                        inputProps={{ maxLength: 256 }}
-                    />
+                        inputProps={{ maxLength: 256 }} />
                     <FormControl margin="normal" fullWidth>
                         <InputLabel>Rating</InputLabel>
                         <Rating
                             name="rating"
                             value={review.rating}
-                            onChange={handleRatingChange}
-                        />
+                            onChange={handleRatingChange} />
                     </FormControl>
                     <Typography variant="h6" style={{ marginTop: '20px' }}>Latest Reviews:</Typography>
                     {reviews.map((rev, index) => (
@@ -312,7 +307,7 @@ const BookDetails: React.FC<BookDetailsProps> = ({ userRole }) => {
                     <Button onClick={handleReviewSubmit} color="primary">Submit Review</Button>
                 </DialogActions>
             </Dialog>
-        </Container>
+        </Container></>
     );
 };
 

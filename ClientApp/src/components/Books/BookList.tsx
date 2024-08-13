@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Container, List, ListItem, ListItemText, TextField, MenuItem, Select, InputLabel, FormControl, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Header from '../Header'; // Import the Header component*/
+import Header from '../Header';
 
+interface BookDetailsProps {
+    userRole: string | null;
+    username: string | null
+    onLogout: () => void;
+}
 interface Book {
     id: number;
     title: string;
@@ -15,14 +20,15 @@ interface Book {
     category: string;
     isbn: string;
     pageCount: number;
+    isCheckedOut: boolean; // Assuming this is part of the Book model
 }
 
-const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
+const BookList: React.FC<BookDetailsProps> = ({ userRole, username, onLogout }) => {
     const [books, setBooks] = useState<Book[]>([]);
     const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOption, setSortOption] = useState<'title' | 'author' | 'pageCount'>('title');
-    const [open, setOpen] = useState(false);  // State to control the popup
+    const [sortOption, setSortOption] = useState<'title' | 'author' | 'availability'>('title');
+    const [open, setOpen] = useState(false);
     const [newBook, setNewBook] = useState({
         title: '',
         author: '',
@@ -54,10 +60,14 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
         }
         if (sortOption) {
             updatedBooks.sort((a, b) => {
-                if (typeof a[sortOption] === 'string' && typeof b[sortOption] === 'string') {
+                if (sortOption === 'availability') {
+                    return (a.isCheckedOut === b.isCheckedOut)
+                        ? 0
+                        : a.isCheckedOut
+                            ? 1
+                            : -1; // Available books first
+                } else if (typeof a[sortOption] === 'string' && typeof b[sortOption] === 'string') {
                     return (a[sortOption] as string).localeCompare(b[sortOption] as string);
-                } else if (typeof a[sortOption] === 'number' && typeof b[sortOption] === 'number') {
-                    return (a[sortOption] as number) - (b[sortOption] as number);
                 }
                 return 0;
             });
@@ -93,7 +103,8 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
     };
 
     return (
-        <Container>
+        <><Header username={username || ''} role={userRole || ""} onLogout={onLogout}  />
+            <Container>
             <h2>Book List</h2>
             {userRole === 'Librarian' && (
                 <Button variant="contained" color="primary" onClick={handleAddBookClick}>
@@ -105,17 +116,16 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
                 fullWidth
                 margin="normal"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
+                onChange={(e) => setSearchTerm(e.target.value)} />
             <FormControl fullWidth margin="normal">
                 <InputLabel>Sort By</InputLabel>
                 <Select
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as 'title' | 'author' | 'pageCount')}
+                    onChange={(e) => setSortOption(e.target.value as 'title' | 'author' | 'availability')}
                 >
                     <MenuItem value="title">Title</MenuItem>
                     <MenuItem value="author">Author</MenuItem>
-                    <MenuItem value="pageCount">Page Count</MenuItem>
+                    <MenuItem value="availability">Availability</MenuItem>
                 </Select>
             </FormControl>
             <List>
@@ -123,8 +133,7 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
                     <ListItem button component={Link} to={`/books/${book.id}`} key={book.id}>
                         <ListItemText
                             primary={book.title}
-                            secondary={`Author: ${book.author} | Description: ${book.description}`}
-                        />
+                            secondary={`Author: ${book.author} | Description: ${book.description} | ${book.isCheckedOut ? 'Not Available' : 'Available'}`} />
                     </ListItem>
                 ))}
             </List>
@@ -139,40 +148,35 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
                         fullWidth
                         margin="normal"
                         value={newBook.title}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Author"
                         name="author"
                         fullWidth
                         margin="normal"
                         value={newBook.author}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Description"
                         name="description"
                         fullWidth
                         margin="normal"
                         value={newBook.description}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Cover Image URL"
                         name="coverImage"
                         fullWidth
                         margin="normal"
                         value={newBook.coverImage}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Publisher"
                         name="publisher"
                         fullWidth
                         margin="normal"
                         value={newBook.publisher}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Publication Date"
                         name="publicationDate"
@@ -181,24 +185,21 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
                         margin="normal"
                         value={newBook.publicationDate}
                         onChange={handleInputChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
+                        InputLabelProps={{ shrink: true }} />
                     <TextField
                         label="Category"
                         name="category"
                         fullWidth
                         margin="normal"
                         value={newBook.category}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="ISBN"
                         name="isbn"
                         fullWidth
                         margin="normal"
                         value={newBook.isbn}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                     <TextField
                         label="Page Count"
                         name="pageCount"
@@ -206,15 +207,14 @@ const BookList: React.FC<{ userRole: string | null }> = ({ userRole }) => {
                         fullWidth
                         margin="normal"
                         value={newBook.pageCount}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleInputChange} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">Cancel</Button>
                     <Button onClick={handleSubmit} color="primary">Submit</Button>
                 </DialogActions>
             </Dialog>
-        </Container>
+        </Container></>
     );
 };
 

@@ -1,26 +1,95 @@
-﻿public class Book
+﻿/// <summary>
+/// Represents a book in the library system.
+/// </summary>
+public class Book
 {
+    /// <summary>
+    /// Gets or sets the unique identifier for the book.
+    /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the title of the book.
+    /// </summary>
     public string Title { get; set; }
+
+    /// <summary>
+    /// Gets or sets the author of the book.
+    /// </summary>
     public string Author { get; set; }
+
+    /// <summary>
+    /// Gets or sets the description of the book.
+    /// </summary>
     public string Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL or path of the book's cover image.
+    /// </summary>
     public string CoverImage { get; set; }
+
+    /// <summary>
+    /// Gets or sets the publisher of the book.
+    /// </summary>
     public string Publisher { get; set; }
+
+    /// <summary>
+    /// Gets or sets the publication date of the book.
+    /// </summary>
     public DateTime PublicationDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the category or genre of the book.
+    /// </summary>
     public string Category { get; set; }
+
+    /// <summary>
+    /// Gets or sets the International Standard Book Number (ISBN) of the book.
+    /// </summary>
     public string ISBN { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of pages in the book.
+    /// </summary>
     public int PageCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the book is currently checked out.
+    /// </summary>
     public bool IsCheckedOut { get; set; }
-    public string? CheckedOutByUserId { get; set; }  // Nullable property for User ID
-    public ApplicationUser? CheckedOutByUser { get; set; }  // Navigation property
 
-    public DateTime? CheckedOutDate { get; set; } // Date when the book was checked out
-    public double AverageRating { get; set; }  // Assuming ratings are on a scale like 1-5
+    /// <summary>
+    /// Gets or sets the ID of the user who checked out the book.
+    /// This is a foreign key to the ApplicationUser.
+    /// </summary>
+    public string? CheckedOutByUserId { get; set; }
 
-    // New field for reviews
+    /// <summary>
+    /// Gets or sets the user who checked out the book.
+    /// This is a navigation property to the ApplicationUser.
+    /// </summary>
+    public ApplicationUser? CheckedOutByUser { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date and time when the book was checked out.
+    /// </summary>
+    public DateTime? CheckedOutDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the average rating of the book based on user reviews.
+    /// Assumes ratings are on a scale like 1-5.
+    /// </summary>
+    public double AverageRating { get; set; }
+
+    /// <summary>
+    /// Gets or sets the collection of reviews associated with the book.
+    /// </summary>
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-    // Computed property for Availability
+    /// <summary>
+    /// Gets the availability status of the book.
+    /// Indicates whether the book is available, overdue, or when it is due.
+    /// </summary>
     public string Availability
     {
         get
@@ -43,5 +112,4 @@
             return $"Not Available (Due in {daysRemaining} days)";
         }
     }
-
 }

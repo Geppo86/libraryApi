@@ -28,12 +28,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Title = "Library API",
         Description = "An API to manage library operations",
-        Contact = new OpenApiContact
-        {
-            Name = "Your Name",
-            Email = "your.email@example.com",
-            Url = new Uri("https://example.com/contact"),
-        }
     });
 });
 
