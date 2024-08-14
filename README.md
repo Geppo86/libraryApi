@@ -29,7 +29,7 @@ Before running the application, ensure you have the following installed:
 
 
 1. **Clone the Repository**:
-   git clone [https://github.com/yourusername/library-management-system.git](https://github.com/Geppo86/libraryApi.git)
+   git clone https://github.com/Geppo86/libraryApi.git
 
 
 2. **Navigate to the Backend Directory**:
