@@ -16,10 +16,8 @@ The **Library Management System** is a web-based application designed to manage 
 
 - **Frontend**: React, TypeScript, Material-UI
 - **Backend**: ASP.NET Core Web API
-- **Database**: Entity Framework Core with SQLite (for development/testing) or SQL Server (for production)
+- **Database**: Entity Framework Core with SQLite  or SQL Server
 - **Authentication**: ASP.NET Core Identity
-
-## Getting Started
 
 ### Prerequisites
 
@@ -29,16 +27,13 @@ Before running the application, ensure you have the following installed:
 - [Node.js](https://nodejs.org/) and npm
 - [SQLite](https://www.sqlite.org/) or SQL Server for database
 
-### Setup Instructions
-
-#### Backend (ASP.NET Core)
 
 1. **Clone the Repository**:
    git clone [https://github.com/yourusername/library-management-system.git](https://github.com/Geppo86/libraryApi.git)
 
 
 2. **Navigate to the Backend Directory**:
- bash:  cd LibraryManagementSystem
+ bash:  cd LibraryApi
 
 
 3. **Install Dependencies**:
